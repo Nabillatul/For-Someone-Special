@@ -1,0 +1,431 @@
+ <style>
+     @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Exo+2:wght@800&family=Lexend+Giga:wght@306&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Righteous&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: pink;
+            color: pink;
+            overflow-x: hidden;
+        }
+
+        #particle-canvas,
+        #start-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .access-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            z-index: 10;
+            background: pink;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .access-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .access-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: black;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            position: relative;
+            z-index: 11;
+        }
+
+        .access-btn {
+            padding: 20px 50px;
+            font-size: 16px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            background: transparent;
+            border: 2px solid black;
+            color: black;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            z-index: 11;
+        }
+
+        .access-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 77, 109, 0.1);
+            transition: left 0.3s ease;
+        }
+
+        .access-btn:hover::before {
+            left: 0;
+        }
+
+        .access-btn:hover {
+            box-shadow: 0 0 20px rgba(255, 77, 109, 0.5);
+            transform: scale(1.05);
+        }
+
+        .main-content {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .main-content.visible {
+            opacity: 1;
+        }
+
+        .container {
+            display: flex;
+            gap: 80px;
+            max-width: 1400px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .photo-section {
+            flex: 1.2;
+            position: relative;
+            min-height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .heart-collage {
+            position: relative;
+            width: 500px;
+            height: 550px;
+        }
+
+        .heart-photo {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            box-shadow: 0 5px 20px rgba(255, 77, 109, 0.4);
+            transition: all 0.5s ease;
+            animation: float 6s ease-in-out infinite;
+            background: pink;
+        }
+
+        .heart-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.95);
+            clip-path: polygon(50% 0%, 0% 25%, 0% 50%, 25% 75%, 50% 100%, 75% 75%, 100% 50%, 100% 25%);
+        }
+
+        .heart-photo:hover {
+            transform: scale(1.2) !important;
+            z-index: 20;
+            box-shadow: 0 10px 40px rgba(255, 77, 109, 0.7);
+        }
+
+        /* Bentuk Love/Hati dengan 15 foto */
+        /* Baris 1: 2 foto (puncak kiri & kanan hati) */
+        .heart-photo:nth-child(1) {
+            top: 0px;
+            left: 80px;
+            animation-delay: 0s;
+        }
+
+        .heart-photo:nth-child(2) {
+            top: 0px;
+            left: 320px;
+            animation-delay: 0.5s;
+        }
+
+        /* Baris 2: 4 foto (mengisi cekungan atas hati) */
+        .heart-photo:nth-child(3) {
+            top: 60px;
+            left: 10px;
+            animation-delay: 1s;
+        }
+
+        .heart-photo:nth-child(4) {
+            top: 60px;
+            left: 150px;
+            animation-delay: 1.5s;
+        }
+
+        .heart-photo:nth-child(5) {
+            top: 60px;
+            left: 250px;
+            animation-delay: 2s;
+        }
+
+        .heart-photo:nth-child(6) {
+            top: 60px;
+            left: 390px;
+            animation-delay: 2.5s;
+        }
+
+        /* Baris 3: 5 foto (bagian tengah hati yang lebar) */
+        .heart-photo:nth-child(7) {
+            top: 150px;
+            left: 0px;
+            animation-delay: 3s;
+        }
+
+        .heart-photo:nth-child(8) {
+            top: 150px;
+            left: 100px;
+            animation-delay: 3.5s;
+        }
+
+        .heart-photo:nth-child(9) {
+            top: 150px;
+            left: 200px;
+            animation-delay: 4s;
+        }
+
+        .heart-photo:nth-child(10) {
+            top: 150px;
+            left: 300px;
+            animation-delay: 4.5s;
+        }
+
+        .heart-photo:nth-child(11) {
+            top: 150px;
+            left: 400px;
+            animation-delay: 5s;
+        }
+
+        /* Baris 4: 3 foto (menyempit) */
+        .heart-photo:nth-child(12) {
+            top: 260px;
+            left: 80px;
+            animation-delay: 5.5s;
+        }
+
+        .heart-photo:nth-child(13) {
+            top: 260px;
+            left: 200px;
+            animation-delay: 6s;
+        }
+
+        .heart-photo:nth-child(14) {
+            top: 260px;
+            left: 320px;
+            animation-delay: 6.5s;
+        }
+
+        /* Baris 5: 1 foto (ujung lancip hati) */
+        .heart-photo:nth-child(15) {
+            top: 370px;
+            left: 200px;
+            animation-delay: 7s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .dossier-section {
+            flex: 0.8;
+            background: blur;
+            border: 2px solid transparent;
+            padding: 30px 35px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.2);
+            max-width: 450px;
+        }
+
+        .badge {
+            position: relative;
+            top: -15px;
+            right: 20px;
+            color: #0a0e27;
+            padding: 5px 15px;
+            font-weight: bold;
+            letter-spacing: 2px;font-family: "Mrs Saint Delafield", cursive;
+            font-weight: 400;
+            font-style: normal;
+            color: black;
+            font-size: 50px;
+        }
+
+        .dossier-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: #ff4d6d;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255, 77, 109, 0.3);
+            padding-bottom: 12px;
+        }
+
+        .info-line {
+            display: flex;
+            margin-bottom: 12px;
+            font-size: 13px;
+            font-weight: 300;
+        }
+
+        .info-label {
+            color: #ff4d6d;
+            width: 130px;
+            flex-shrink: 0;
+            font-weight: 400;
+        }
+
+        .info-value {
+            color: #e0e0e0;
+        }
+
+        h2 {
+            margin-top: 25px;
+            padding-top: 18px;
+            line-height: 1.7;
+            color: black;
+            font-size: 15px;
+            font-family: "Geom", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: <weight>;
+            font-style: normal;
+            text-align: justify;
+        }
+        h1{
+            color: red;
+            font-family: "Bungee", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+        }
+
+        
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+                gap: 50px;
+            }
+
+            .heart-collage {
+                width: 400px;
+                height: 450px;
+            }
+
+            .heart-photo {
+                width: 80px;
+                height: 80px;
+            }
+
+            .heart-photo:nth-child(1) { top: 0px; left: 65px; }
+            .heart-photo:nth-child(2) { top: 0px; left: 255px; }
+            .heart-photo:nth-child(3) { top: 50px; left: 10px; }
+            .heart-photo:nth-child(4) { top: 50px; left: 120px; }
+            .heart-photo:nth-child(5) { top: 50px; left: 200px; }
+            .heart-photo:nth-child(6) { top: 50px; left: 310px; }
+            .heart-photo:nth-child(7) { top: 125px; left: 0px; }
+            .heart-photo:nth-child(8) { top: 125px; left: 80px; }
+            .heart-photo:nth-child(9) { top: 125px; left: 160px; }
+            .heart-photo:nth-child(10) { top: 125px; left: 240px; }
+            .heart-photo:nth-child(11) { top: 125px; left: 320px; }
+            .heart-photo:nth-child(12) { top: 215px; left: 65px; }
+            .heart-photo:nth-child(13) { top: 215px; left: 160px; }
+            .heart-photo:nth-child(14) { top: 215px; left: 255px; }
+            .heart-photo:nth-child(15) { top: 305px; left: 160px; }
+
+            .dossier-section {
+                max-width: 500px;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .access-title {
+                font-size: 24px;
+            }
+
+            .access-btn {
+                padding: 15px 35px;
+                font-size: 14px;
+            }
+
+            .heart-collage {
+                width: 300px;
+                height: 350px;
+            }
+
+            .heart-photo {
+                width: 60px;
+                height: 60px;
+                border: 1.5px solid #ff4d6d;
+            }
+
+            .heart-photo:nth-child(1) { top: 0px; left: 50px; }
+            .heart-photo:nth-child(2) { top: 0px; left: 190px; }
+            .heart-photo:nth-child(3) { top: 38px; left: 8px; }
+            .heart-photo:nth-child(4) { top: 38px; left: 92px; }
+            .heart-photo:nth-child(5) { top: 38px; left: 148px; }
+            .heart-photo:nth-child(6) { top: 38px; left: 232px; }
+            .heart-photo:nth-child(7) { top: 100px; left: 0px; }
+            .heart-photo:nth-child(8) { top: 100px; left: 60px; }
+            .heart-photo:nth-child(9) { top: 100px; left: 120px; }
+            .heart-photo:nth-child(10) { top: 100px; left: 180px; }
+            .heart-photo:nth-child(11) { top: 100px; left: 240px; }
+            .heart-photo:nth-child(12) { top: 168px; left: 50px; }
+            .heart-photo:nth-child(13) { top: 168px; left: 120px; }
+            .heart-photo:nth-child(14) { top: 168px; left: 190px; }
+            .heart-photo:nth-child(15) { top: 236px; left: 120px; }
+
+            .dossier-section {
+                padding: 25px;
+            }
+
+            .dossier-title {
+                font-size: 20px;
+            }
+
+            .info-line {
+                flex-direction: column;
+                gap: 3px;
+                font-size: 12px;
+            }
+
+            .info-label {
+                width: 100%;
+            }
+
+                  }
+    </style>
